@@ -1,0 +1,59 @@
+\newlength{\pbhfontsize}
+\setlength{\pbhfontsize}{\f@size pt}
+\newtcolorbox{problemheaderbox}[3][]{
+  enhanced, frame hidden, colback=white, boxrule=0pt,
+  before skip=5pt, after skip=5pt,
+  width=.975\linewidth,
+  height=24pt,
+  colupper=white,
+  overlay={
+    \def\sqw{2.353\pbhfontsize}
+    \def\sqww{2.236\pbhfontsize}
+    \def\gap{4pt}
+    \def\rc{0pt}
+    \def\slant{12pt}
+    \def\chip{12pt}
+    \def\chipgap{2pt}
+    \def\pad{5pt}
+    \colorlet{bar}{black!90}
+    \colorlet{numframe}{black}
+
+    \coordinate (MID) at ($ (frame.north west)!.5!(frame.south west) $);
+
+    \node[draw=numframe, line width=.8pt, fill=white,
+          minimum size=\sqww, inner sep=0pt,
+          anchor=west,
+          font=\bfseries]
+          (NUM) at ([xshift=2pt]MID) {#2};
+
+    \coordinate (BARW) at ([xshift=\sqw+\gap]frame.west|-MID);
+    \coordinate (BASE) at ([xshift=-\chip-\chipgap-1pt]frame.east|-MID);
+
+    \coordinate (TOP) at ([yshift=\sqw/2]BARW);
+    \coordinate (BOT) at ([yshift=-\sqw/2]BARW);
+
+    \fill[bar, rounded corners=\rc]
+      (TOP)
+      -- ([xshift=\slant, yshift=\sqw/2]BASE)
+      -- ([xshift=0pt, yshift=-\sqw/2]BASE)
+      -- (BOT) -- cycle;
+
+    \fill[bar, rounded corners=\rc]
+      ([xshift=\slant+\chipgap, yshift=\sqw/2]BASE)
+      -- ([xshift=\slant+\chipgap+\chip, yshift=\sqw/2]BASE)
+      -- ([xshift=\chipgap+\chip, yshift=-\sqw/2]BASE)
+      -- ([xshift=\chipgap, yshift=-\sqw/2]BASE) -- cycle;
+
+    \node[anchor=west,
+          font=\sffamily\gtfamily,
+          text=white]
+      at ([xshift=\pad]BARW) {#3};
+  }
+}
+
+\newcounter{pbhnum}
+\setcounter{pbhnum}{0}
+
+\NewDocumentCommand{\problemheader}{O{\refstepcounter{pbhnum}{\thepbhnum}} m}{
+  \begin{problemheaderbox}{#1}{#2}\end{problemheaderbox}
+}

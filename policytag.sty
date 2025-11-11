@@ -1,0 +1,42 @@
+\NewDocumentCommand{\policytag}{O{white} O{black} m}{
+\beginjin{tikzpicture}[baseline=(txt.base)]
+% パラメータ調整
+\def\notch{8pt}
+\def\notchh{7pt}
+\def\padx{10pt}
+\def\padxx{15pt}
+\def\pady{3pt}
+
+% テキストノード (座標計算用)
+\node[inner sep=0pt, outer sep=0pt, anchor=base,
+  font=\bfseries] (txt) {#3};
+
+% 四隅座標計算
+\coordinate (NW) at ($ (txt.north west)+(-\padxx, \pady) $);
+\coordinate (NE) at ($ (txt.north east)+(\padx, \pady) $);
+\coordinate (SW) at ($ (txt.south west)+(-\padxx,-\pady) $);
+\coordinate (SE) at ($ (txt.south east)+(\padx,-\pady) $);
+
+% 左右の中点
+\coordinate (LM) at ($ (NW)!0.5!(SW) $);
+\coordinate (RM) at ($ (NE)!0.5!(SE) $);
+
+% 背景塗り
+\fill[#1]
+  ($ (NW)+(\notch,0) $) -- (LM) -- ($ (SW)+(\notchh,0) $) --
+  ($ (SE)+(\notch,0) $) -- (RM) -- ($ (NE)+(\notch,0) $) -- cycle;
+
+% 外枠（左がく型）
+\draw[line width=0.6pt]
+  ($ (NW)+(\notch,0) $) -- (LM) -- ($ (SW)+(\notchh,0) $) --
+  ($ (SE)+(\notch,0) $) -- (RM) -- ($ (NE)+(\notch,0) $) -- cycle;
+
+% 角の飾り
+\draw[line width=0.6pt]
+  ($ (LM)+(0,-3pt) $) -- ($ (SW)+(\notchh,0)+(-1pt,-2pt) $) -- ($ (SE)+(\notch,0)+(0,-2pt) $);
+
+% テキストノード (上からの再描画用)
+\node[inner sep=0pt, outer sep=0pt, anchor=base,
+  font=\bfseries, #2] (txt) {#3};
+\end{tikzpicture}
+}
