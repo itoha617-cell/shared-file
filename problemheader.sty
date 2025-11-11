@@ -1,5 +1,16 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{problemheader}[2025/11/11 v1.0 Custom problem header]
+
+\RequirePackage{xparse}
+\RequirePackage{tcolorbox}
+\RequirePackage{tikz}
+\usetikzlibrary{calc}
+
+
 \newlength{\pbhfontsize}
-\setlength{\pbhfontsize}{\f@size pt}
+
+
+% tcolorbox 環境の定義
 \newtcolorbox{problemheaderbox}[3][]{
   enhanced, frame hidden, colback=white, boxrule=0pt,
   before skip=5pt, after skip=5pt,
@@ -7,6 +18,13 @@
   height=24pt,
   colupper=white,
   overlay={
+    % ★修正点:
+    % \f@size (現在のフォントサイズ) を使う処理を
+    % ボックスが描画される「ここ」に移動。
+    % これにより、使用時点のフォントサイズが正しく反映される。
+    \setlength{\pbhfontsize}{\f@size pt},
+
+    % --- 以下は元の定義 ---
     \def\sqw{2.353\pbhfontsize}
     \def\sqww{2.236\pbhfontsize}
     \def\gap{4pt}
@@ -45,15 +63,20 @@
       -- ([xshift=\chipgap, yshift=-\sqw/2]BASE) -- cycle;
 
     \node[anchor=west,
-          font=\sffamily\gtfamily,
+          font=\sffamily\gtfamily, % \gtfamily は適切なフォントパッケージが必要な場合があります
           text=white]
       at ([xshift=\pad]BARW) {#3};
   }
 }
 
+
+% 問題番号用カウンター
 \newcounter{pbhnum}
 \setcounter{pbhnum}{0}
+
 
 \NewDocumentCommand{\problemheader}{O{\refstepcounter{pbhnum}{\thepbhnum}} m}{
   \begin{problemheaderbox}{#1}{#2}\end{problemheaderbox}
 }
+
+\endinput
